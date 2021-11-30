@@ -1,19 +1,18 @@
 import { Layout } from 'antd';
 import React from 'react';
-import { Link } from 'umi';
+import { Link, history } from 'umi';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import styles from './index.less';
 export interface PageHeaderProps {
   center?: React.ReactNode,
   right?: React.ReactNode,
-  returnTo?: string
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ center, right, returnTo }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ center, right }) => {
 
   return <Layout.Header className={styles.header}>
     <div className={styles.left}>
-      <Link to={returnTo || '/'}><ArrowLeftOutlined/></Link>
+      <a onClick={() => history.goBack()}><ArrowLeftOutlined/></a>
     </div>
     <div className={styles.center}>
       {center}

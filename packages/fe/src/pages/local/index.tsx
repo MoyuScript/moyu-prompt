@@ -12,7 +12,7 @@ const LocalPage: React.FC<LocalPageProps> = () => {
 
   return <>
     <Layout>
-      <PageHeader returnTo={'/'}/>
+      <PageHeader/>
       <PageContent>
         <Teleprompter>
         {`候应引定公区消红将县层，县回铁调教开必量响，习千5孟他复半村明。 精完入式只区长济没组，光何要题头际半电斯，除儿届美林放何关。 当群器备技具消，看各海程资月几，肃但要详。 目可就象上间然张，又交受便力表用，技该事严对赤。 先外该选强许并消发规，委许各济下军引行安，期亲医你盛度告查。
