@@ -1,13 +1,43 @@
 .teleprompter {
   position: relative;
-  padding: 1em;
+  padding: 50vh 1em 50vh;
 
   user-select: none;
   color: white;
 
   text-align: justify;
 
-  &.mirror {
-    transform: scaleY(-1);
+  .content {
+    position: relative;
+
+    &.mirror {
+      transform: scaleY(-1);
+    }
+  }
+
+  .mask {
+    display: grid;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 2;
+
+    grid-template-rows: 3fr 6fr 3fr;
+
+    & > div {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    & > div:nth-child(2) {
+      position: relative;
+      background-color: initial;
+
+      .progress {
+        height: 100%;
+        background-color: rgba(0, 183, 255, 0.2);
+      }
+    }
   }
 }

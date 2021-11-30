@@ -1,20 +1,45 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PageHeader from '@/components/PageHeader';
 import { Layout } from 'antd';
-import Teleprompter from '@/components/Teleprompter';
+import Teleprompter, { TeleprompterController } from '@/components/Teleprompter';
 import PageContent from '@/components/PageContent';
+import Controller, { ControllerValues } from './components/Controller';
+import { debounce } from 'lodash';
+import { formatDuration } from '@/util';
 
 export interface LocalPageProps {
 
 }
 
 const LocalPage: React.FC<LocalPageProps> = () => {
+  // TODO: 从 localStorage 获取配置
+  const [config, setConfig] = useState<ControllerValues>({
+    fontSize: 64,
+    speed: 50,
+    mirror: false,
+    showProgress: true
+  });
 
+  const [estimateDuration, setEstimateDuration] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [controller, setController] = useState<TeleprompterController | null>(null);
+
+  const onControllerValueChange = debounce((config: ControllerValues) => setConfig(config), 50);
+
+  // TODO: 修复时间显示慢的问题
+  const remainingTime = estimateDuration - estimateDuration * progress;
   return <>
     <Layout>
-      <PageHeader/>
+      <PageHeader
+        center={<Controller reset={controller ? controller.reset : undefined} initialValues={config} onChange={onControllerValueChange}/>}
+        right={<span>-{formatDuration(remainingTime)}</span>}
+      />
       <PageContent>
-        <Teleprompter>
+        <Teleprompter
+          onEstimatedDurationUpdate={estimateDuration => setEstimateDuration(estimateDuration)}
+          onProgress={progress => setProgress(progress)}
+          onControllerAvailable={controller => setController(controller)}
+          {...config}>
         {`候应引定公区消红将县层，县回铁调教开必量响，习千5孟他复半村明。 精完入式只区长济没组，光何要题头际半电斯，除儿届美林放何关。 当群器备技具消，看各海程资月几，肃但要详。 目可就象上间然张，又交受便力表用，技该事严对赤。 先外该选强许并消发规，委许各济下军引行安，期亲医你盛度告查。
 
         进证至车大行断七示则，决活风转话局度转平，劳时李置主十思整析。 标律给同达音成，化史听多而，金辰事全坊。 矿如示象合根速定导红加，团集府东-展态例。 会龙速效现命问据理，除节民发事取五，斯飞录求柜否离。

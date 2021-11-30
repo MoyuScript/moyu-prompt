@@ -23,7 +23,7 @@ const DisplayerPage: React.FC<DisplayerPageProps> = () => {
 
   return <>
     <Layout>
-      <PageHeader returnTo='/' center={headerCenter} right={headerRight}/>
+      <PageHeader center={headerCenter} right={headerRight}/>
     </Layout>
   </>;
 };

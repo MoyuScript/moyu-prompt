@@ -1,5 +1,6 @@
 import { CSSProperties } from '@umijs/renderer-react/node_modules/@types/react';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { min, max } from 'lodash';
 
 import styles from './index.less';
 
@@ -15,9 +16,13 @@ export interface TeleprompterProps {
   fontSize?: number
   speed?: number
   mirror?: boolean
+  showMask?: boolean
+  showProgress?: boolean
+  switchScrollingStatusWhenTap?: boolean
   onControllerAvailable?: (controller: TeleprompterController) => void
   onProgress?: (progress: number) => void
   onEstimatedDurationUpdate?: (timeRemaining: number) => void
+  onScrollingStatusChange?: (status: boolean) => void
 }
 
 const Teleprompter: React.FC<TeleprompterProps> = ({
@@ -25,18 +30,25 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   fontSize = 64,
   speed = 1,
   mirror = false,
+  showMask = true,
+  showProgress = true,
+  switchScrollingStatusWhenTap = true,
   onControllerAvailable,
   onEstimatedDurationUpdate,
   onProgress,
+  onScrollingStatusChange,
 }) => {
   const [position, setPosition] = useState(0);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [scrolling, setScrolling] = useState(false);
   const [height, setHeight] = useState(0);
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const interval = speed * 100;
+  const dependencies = [position, height, fontSize, speed, mirror];
+
+  const stepY = speed / 50;
+  const progress = min([position / (height - window.innerHeight), 1]) as number;
 
   // 控制器初始化
   const controller: TeleprompterController = {
@@ -53,10 +65,26 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
     },
 
     reset() {
-      this.pause();
+      controller.pause();
       setPosition(0);
     }
   };
+
+  const scrollToPosition = useCallback((scroll: number): number => {
+    if (mirror) {
+      return (height - window.innerHeight) - scroll + (ref.current?.offsetTop || 0);
+    } else {
+      return scroll;
+    }
+  }, dependencies);
+
+  const positionToScroll = useCallback((position: number): number => {
+    if (mirror) {
+      return (height - window.innerHeight) - position + (ref.current?.offsetTop || 0);
+    } else {
+      return position;
+    }
+  }, dependencies);
 
   useEffect(() => {
     if (onControllerAvailable) {
@@ -66,71 +94,123 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
 
   // 滚动控制
   useEffect(() => {
+    function updatePosition() {
+      setPosition(position => {
+          if (position >= height - window.innerHeight) {
+            // 结束
+            controller.pause();
+            return position;
+          } else {
+            return position + stepY;
+          }
+      });
+    }
     if (scrolling) {
-      const intervalId = setInterval(() => {
-        setPosition(prev => prev + 1);
-      }, interval);
-      setIntervalId(intervalId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+
+      const newIntervalId = setInterval(updatePosition, 16);
+      setIntervalId(newIntervalId);
     } else {
       if (intervalId) {
         clearInterval(intervalId);
         setIntervalId(null);
       }
     }
-  }, [scrolling]);
+
+    if (onScrollingStatusChange) {
+      onScrollingStatusChange(scrolling);
+    }
+  }, [scrolling, ...dependencies]);
 
   // 预计时长计算
   function calculateEstimatedDuration(): number {
-    return height * interval;
+    return (height - window.innerHeight) * (16 / stepY);
   }
 
   useEffect(() => {
     if (onEstimatedDurationUpdate) {
       onEstimatedDurationUpdate(calculateEstimatedDuration());
     }
-  }, [fontSize, speed, height]);
+  }, [height, fontSize, speed, mirror]);
 
   // 进度
   useEffect(() => {
     if (onProgress && ref.current) {
-      onProgress(position / ref.current.clientHeight);
+      onProgress(progress);
     }
-  }, [position]);
+  }, dependencies);
 
   // 高度
   function updateHeight(): void {
     if (ref.current) {
-      setHeight(ref.current.clientHeight);
+      setHeight(ref.current.offsetHeight);
     }
   }
 
   useEffect(() => {
-    // 下一事件循环计算
-    setTimeout(() => {
-      updateHeight();
-    }, 0);
+    updateHeight();
 
     window.addEventListener('resize', updateHeight);
 
     return () => {
       window.removeEventListener('resize', updateHeight);
     };
-  }, []);
+  }, [fontSize, speed, mirror]);
 
   // 滚动
   useEffect(() => {
     document.documentElement.scrollTo({
-      top: position
+      top: positionToScroll(position)
     })
-  }, [position]);
+  }, dependencies);
+
+  // 点击切换滚动状态
+  function switchScrollingStatus() {
+    if (!switchScrollingStatusWhenTap) {
+      return;
+    }
+
+    if (scrolling) {
+      controller.pause();
+    } else {
+      controller.start();
+    }
+  }
+
+  // 同步用户滚动
+  useEffect(() => {
+    function syncUserScroll(ev: Event) {
+
+      setPosition(scrollToPosition(window.scrollY));
+    }
+    window.addEventListener('scroll', syncUserScroll);
+
+    return () => {
+      window.removeEventListener('scroll', syncUserScroll);
+    }
+  }, dependencies);
 
   const style: CSSProperties = {
     fontSize: `${fontSize}px`,
-    transform: `scale`
   };
 
-  return <div ref={ref} style={style} className={`${styles.teleprompter} ${mirror ? styles.mirror : ''}`}>
-    {children?.split('\n').map((v, n) => <p key={n}>{v}</p>)}
+  return <div
+    ref={ref}
+    style={style}
+    className={`${styles.teleprompter}`}
+    onClick={switchScrollingStatus}>
+    <div className={`${styles.content} ${mirror ? styles.mirror : ''}`}>
+      {children?.split('\n').map((v, n) => <p key={n}>{v}</p>)}
+    </div>
+    {showMask && <div className={styles.mask}>
+      <div/>
+      <div>
+        {showProgress && <div className={styles.progress} style={{ width: `${progress * 100}%` }}/>}
+      </div>
+      <div/>
+    </div>}
   </div>;
 };
 

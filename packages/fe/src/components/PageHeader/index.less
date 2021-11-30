@@ -8,4 +8,16 @@
   padding: 0 1.5em;
 
   font-size: 1.5em;
+
+  transition: transform 0.5s;
+  overflow-x: auto;
+
+  &.hide {
+    transform: translateY(-100%);
+  }
+
+  .area {
+    display: flex;
+    align-items: center;
+  }
 }

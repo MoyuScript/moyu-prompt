@@ -15,7 +15,7 @@ const ControllerPage: React.FC<ControllerPageProps> = () => {
 
   return <>
     <Layout>
-      <PageHeader returnTo='/' right={headerRight}/>
+      <PageHeader right={headerRight}/>
     </Layout>
   </>;
 };
