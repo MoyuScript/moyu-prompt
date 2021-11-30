@@ -4,9 +4,17 @@
   margin-top: 8em;
   padding: 0 4em;
 
+  @media (max-width: 400px) {
+    padding: 0 1em;
+  }
+
   .title {
     text-align: center;
     font-size: 4em;
+
+    @media (max-width: 400px) {
+      font-size: 3em;
+    }
   }
 
   .btnGroup {
@@ -25,6 +33,10 @@
       padding: 2em 4em;
 
       font-size: 1.5em;
+
+      @media (max-width: 400px) {
+        font-size: 1em;
+      }
     }
   }
 }
