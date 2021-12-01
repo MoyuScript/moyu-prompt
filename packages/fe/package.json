@@ -4,9 +4,7 @@
     "start": "umi dev",
     "build": "umi build",
     "postinstall": "umi generate tmp",
-    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -21,7 +19,9 @@
   },
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
+    "idb": "^7.0.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "react": "17.x",
     "react-dom": "17.x",
     "umi": "^3.5.20"

@@ -1,0 +1,37 @@
+.projectList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 1em;
+
+  .item {
+    position: relative;
+    padding: .5em;
+    cursor: pointer;
+    transition: transform .2s;
+    transform: scale(1);
+
+    &:hover {
+      transform: scale(1.01);
+    }
+
+    &.pick {
+      box-shadow: 0 0 10px #3562a0;
+      transition: box-shadow .1s;
+    }
+
+    .text {
+      height: 20vh;
+      border: 1px solid rgb(71, 71, 71);
+      border-radius: .2em;
+
+      overflow-y: auto;
+      color: gray;
+      user-select: none;
+    }
+
+    .name {
+      margin-top: .5em;
+      text-align: center;
+    }
+  }
+}

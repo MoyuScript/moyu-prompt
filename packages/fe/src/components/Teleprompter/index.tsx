@@ -11,13 +11,16 @@ export interface TeleprompterController {
   reset: () => void
 }
 
-export interface TeleprompterProps {
-  children?: string
+export interface TeleprompterConfig {
   fontSize?: number
   speed?: number
   mirror?: boolean
   showMask?: boolean
   showProgress?: boolean
+}
+
+export interface TeleprompterProps extends TeleprompterConfig {
+  children?: string
   switchScrollingStatusWhenTap?: boolean
   onControllerAvailable?: (controller: TeleprompterController) => void
   onProgress?: (progress: number) => void
@@ -45,7 +48,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
 
   const ref = useRef<HTMLDivElement>(null);
 
-  const dependencies = [position, height, fontSize, speed, mirror];
+  const dependencies = [position, height, fontSize, speed, mirror, children];
 
   const stepY = speed / 50;
   const progress = min([position / (height - window.innerHeight), 1]) as number;
@@ -157,7 +160,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
     return () => {
       window.removeEventListener('resize', updateHeight);
     };
-  }, [fontSize, speed, mirror]);
+  }, [fontSize, speed, mirror, children]);
 
   // 滚动
   useEffect(() => {
@@ -188,7 +191,6 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
       if (Math.abs(newPosition - position) > 1) {
         // 认为是用户滚动，更新位置
         setPosition(newPosition);
-        console.log(newPosition);
       }
 
     }

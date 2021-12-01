@@ -8,7 +8,7 @@ import {
   ReloadOutlined,
   Loading3QuartersOutlined
 } from '@ant-design/icons';
-import { configRange } from '@/const';
+import { CONFIG_RANGE } from '@/const';
 import Fullscreen from '@/components/Fullscreen';
 
 export interface ControllerValues {
@@ -39,7 +39,7 @@ const Controller: React.FC<ControllerProps> = ({ onChange, initialValues, reset 
     <div className={styles.group}>
       <FontSizeOutlined/>
       <Slider
-        min={configRange.fontSize[0]} max={configRange.fontSize[1]} style={{ width: '100px' }}
+        min={CONFIG_RANGE.fontSize[0]} max={CONFIG_RANGE.fontSize[1]} style={{ width: '100px' }}
         defaultValue={config.fontSize}
         onChange={value => _onChange({fontSize: value})}
         tooltipVisible={false}/>
@@ -48,7 +48,7 @@ const Controller: React.FC<ControllerProps> = ({ onChange, initialValues, reset 
     <div className={styles.group}>
       <FieldTimeOutlined/>
       <Slider
-        min={configRange.speed[0]} max={configRange.speed[1]} style={{ width: '100px' }}
+        min={CONFIG_RANGE.speed[0]} max={CONFIG_RANGE.speed[1]} style={{ width: '100px' }}
         defaultValue={config.speed}
         onChange={value => _onChange({speed: value})}
         tooltipVisible={false}/>
