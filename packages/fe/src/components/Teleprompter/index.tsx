@@ -128,12 +128,12 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   function calculateEstimatedDuration(): number {
     return (height - window.innerHeight) * (16 / stepY);
   }
-
   useEffect(() => {
+
     if (onEstimatedDurationUpdate) {
       onEstimatedDurationUpdate(calculateEstimatedDuration());
     }
-  }, [height, fontSize, speed, mirror]);
+  }, dependencies);
 
   // 进度
   useEffect(() => {
@@ -180,6 +180,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   }
 
   // 同步用户滚动
+  // FIXME: 时间变慢问题所在
   useEffect(() => {
     function syncUserScroll(ev: Event) {
 
