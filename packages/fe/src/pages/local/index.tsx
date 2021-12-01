@@ -26,7 +26,6 @@ const LocalPage: React.FC<LocalPageProps> = () => {
 
   const onControllerValueChange = debounce((config: ControllerValues) => setConfig(config), 50);
 
-  // TODO: 修复时间显示慢的问题
   const remainingTime = estimateDuration - estimateDuration * progress;
   return <>
     <Layout>

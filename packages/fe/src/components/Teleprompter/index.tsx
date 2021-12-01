@@ -180,11 +180,17 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   }
 
   // 同步用户滚动
-  // FIXME: 时间变慢问题所在
   useEffect(() => {
     function syncUserScroll(ev: Event) {
+      const newPosition = scrollToPosition(window.scrollY);
 
-      setPosition(scrollToPosition(window.scrollY));
+      // 识别是否为用户滚动，避免重复更新导致时间变慢
+      if (Math.abs(newPosition - position) > 1) {
+        // 认为是用户滚动，更新位置
+        setPosition(newPosition);
+        console.log(newPosition);
+      }
+
     }
     window.addEventListener('scroll', syncUserScroll);
 
