@@ -11,31 +11,29 @@ export interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ center, right, autoHide = false }) => {
   const [hide, setHide] = useState(false);
-  const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
   // 自动隐藏
   useEffect(() => {
-    function resetTimer() {
-      setTimerId(timerId => {
-        if (timerId) {
-          clearTimeout(timerId);
-        }
+    let timerId: NodeJS.Timer | null = null;
 
-        return setTimeout(() => {
-          setHide(true);
-          setTimerId(null);
-        }, 10000);
-      });
+    function resetTimer() {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+
+      return setTimeout(() => {
+        setHide(true);
+      }, 10000);
     }
 
     function onMouseMove() {
       setHide(() => false);
-      resetTimer();
+      timerId = resetTimer();
     }
 
     if (autoHide) {
       window.addEventListener('mousemove', onMouseMove);
-      resetTimer();
+      timerId = resetTimer();
     }
 
     return () => {

@@ -1,3 +1,5 @@
+@import '/src/global.less';
+
 .header {
   display: flex;
   position: fixed;
@@ -11,6 +13,11 @@
 
   transition: transform 0.5s;
   overflow-x: auto;
+
+  @media screen and (max-width: @mobile) {
+    font-size: 2vw;
+    height: 6vw;
+  }
 
   &.hide {
     transform: translateY(-100%);

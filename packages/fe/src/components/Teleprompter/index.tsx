@@ -42,7 +42,6 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   onScrollingStatusChange,
 }) => {
   const [position, setPosition] = useState(0);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [scrolling, setScrolling] = useState(false);
   const [height, setHeight] = useState(0);
 
@@ -97,8 +96,11 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
 
   // 滚动控制
   useEffect(() => {
+    let intervalId: NodeJS.Timer | null = null;
+
     function updatePosition() {
-      setPosition(position => {
+      if (intervalId) {
+        setPosition(position => {
           if (position >= height - window.innerHeight) {
             // 结束
             controller.pause();
@@ -107,24 +109,30 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
             return position + stepY;
           }
       });
+      }
     }
     if (scrolling) {
       if (intervalId) {
         clearInterval(intervalId);
       }
 
-      const newIntervalId = setInterval(updatePosition, 16);
-      setIntervalId(newIntervalId);
+      intervalId = setInterval(updatePosition, 16);
     } else {
       if (intervalId) {
         clearInterval(intervalId);
-        setIntervalId(null);
+        intervalId = null;
       }
     }
 
     if (onScrollingStatusChange) {
       onScrollingStatusChange(scrolling);
     }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [scrolling, ...dependencies]);
 
   // 预计时长计算

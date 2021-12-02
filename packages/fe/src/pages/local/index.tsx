@@ -27,7 +27,7 @@ const LocalPage: React.FC<LocalPageProps> = () => {
   const [controller, setController] = useState<TeleprompterController | null>(null);
   const [project, setProject] = useState<Project | null>(null);
 
-  const onControllerValueChange = debounce((config: ControllerValues) => setConfig(config), 50);
+  const onControllerValueChange = debounce((values: ControllerValues) => setConfig(old => ({...old, ...values})), 50);
 
   const remainingTime = estimateDuration - estimateDuration * progress;
 
@@ -58,6 +58,7 @@ const LocalPage: React.FC<LocalPageProps> = () => {
       <PageHeader
         center={<Controller reset={controller ? controller.reset : undefined} initialValues={config} onChange={onControllerValueChange}/>}
         right={<span>-{formatDuration(remainingTime)}</span>}
+        autoHide
       />
       <PageContent>
         <Teleprompter

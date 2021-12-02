@@ -1,4 +1,23 @@
-.content {
+@import '/src/global.less';
+
+.header {
   display: flex;
+  position: fixed;
+  width: 100%;
+  z-index: 10;
   justify-content: space-between;
+  white-space: nowrap;
+  align-items: center;
+
+  .title {
+    margin: 0;
+
+    @media screen and (max-width: @mobile) {
+      font-size: 2vw;
+    }
+  }
+
+  @media screen and (max-width: @mobile) {
+    height: 5vw;
+  }
 }

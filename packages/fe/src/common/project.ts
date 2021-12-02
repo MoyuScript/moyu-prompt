@@ -1,5 +1,3 @@
-import ProjectManager, { ProjectManagerProps } from "@/components/ProjectManager";
-import { Modal, Typography } from 'antd';
 import { openDB } from 'idb';
 import { merge } from 'lodash';
 
@@ -12,42 +10,6 @@ export interface Project {
   id: number
   name: string
   content: string
-  ctime: number
-}
-
-export async function chooseProject(): Promise<Project | null> {
-  return new Promise(resolve => {
-    let projectPicked: Project | null = null;
-
-    const modal = Modal.confirm({
-      icon: null,
-      okText: '打开',
-      cancelText: '取消',
-      okButtonProps: {
-        disabled: true
-      },
-      title: <Typography.Title level={3}>请选择你的工程</Typography.Title>,
-      content: <ProjectManager onPickChange={pick => {
-        projectPicked = pick;
-
-        modal.update({
-          okButtonProps: {
-            disabled: pick === null
-          },
-        })
-      }}
-      onPick={pick => {
-        resolve(pick);
-        modal.destroy();
-      }}/>,
-      width: 1024,
-      maskClosable: true,
-      centered: true,
-      onCancel: () => resolve(null),
-      onOk: () => resolve(projectPicked)
-    });
-  })
-
 }
 
 async function openDatabase() {
@@ -88,7 +50,7 @@ export async function editProject(id: Project['id'], project: Omit<Partial<Proje
   }
 
   const newData = merge(oldData, project);
-  await db.put(DATABASE_CONFIG.name, newData, id);
+  await db.put(DATABASE_CONFIG.name, newData);
 }
 
 export async function getProjectList(): Promise<Project[]> {

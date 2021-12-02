@@ -1,6 +1,18 @@
+@import '/src/global';
+
 .item {
+  margin: 0 .5em;
+
+  @media screen and (max-width: @mobile) {
+    font-size: 1vw;
+    margin: 0 .5vw;
+  }
 
   .icon {
     margin-right: .3em;
+
+    @media screen and (max-width: @mobile) {
+      font-size: 1.5vw;
+    }
   }
 }
