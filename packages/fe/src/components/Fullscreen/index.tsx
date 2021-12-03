@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons';
 
-export interface FullscreenProps {
-
-}
+export interface FullscreenProps {}
 
 const Fullscreen: React.FC<FullscreenProps> = () => {
   const [fullscreen, setFullscreen] = useState(!!document.fullscreenElement);
@@ -35,8 +33,11 @@ const Fullscreen: React.FC<FullscreenProps> = () => {
     } catch (e) {}
   }
 
-  return fullscreen ? <FullscreenExitOutlined className={styles.fullscreen} onClick={off}/>
-    : <FullscreenOutlined className={styles.fullscreen} onClick={on}/>;
+  return fullscreen ? (
+    <FullscreenExitOutlined className={styles.fullscreen} onClick={off} />
+  ) : (
+    <FullscreenOutlined className={styles.fullscreen} onClick={on} />
+  );
 };
 
 export default Fullscreen;

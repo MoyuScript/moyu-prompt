@@ -20,4 +20,3 @@ export function get<T = unknown>(key: string): T | null {
 
   return JSON.parse(data);
 }
-

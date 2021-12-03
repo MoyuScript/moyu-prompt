@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 
 export default function IndexPage() {
   const [projectManagerVisible, setProjectManagerVisible] = useState(false);
+  const [onPickGoto, setOnPickGoto] = useState('');
 
   function navTo(path: string): void {
     history.push(path);
@@ -15,7 +16,7 @@ export default function IndexPage() {
 
   function onPick(project: Project | null) {
     if (project) {
-      navTo(`/local?id=${project.id}`)
+      navTo(`${onPickGoto}?id=${project.id}`);
     }
 
     setProjectManagerVisible(false);
@@ -28,14 +29,32 @@ export default function IndexPage() {
         <h1 className={styles.title}>摸鱼提词器</h1>
         <div className={styles.tip}>（请横屏使用）</div>
         <div className={styles.btnGroup}>
-          <Button className={styles.btn} onClick={() => navTo('/controller')}>遥控器</Button>
-          <Button className={styles.btn} onClick={() => navTo('/displayer')}>显示器</Button>
-          <Button className={styles.btn} onClick={() => setProjectManagerVisible(true)}>仅本地</Button>
+          <Button
+            className={styles.btn}
+            onClick={() => {
+              setProjectManagerVisible(true);
+              setOnPickGoto('/controller');
+            }}
+          >
+            遥控器
+          </Button>
+          <Button className={styles.btn} onClick={() => navTo('/displayer')}>
+            显示器
+          </Button>
+          <Button
+            className={styles.btn}
+            onClick={() => {
+              setProjectManagerVisible(true);
+              setOnPickGoto('/local');
+            }}
+          >
+            仅本地
+          </Button>
         </div>
         <div className={styles.help}>
-          <Link to='/help'>查看帮助</Link>
+          <Link to="/help">查看帮助</Link>
         </div>
-        <ProjectManager visible={projectManagerVisible} onPick={onPick}/>
+        <ProjectManager visible={projectManagerVisible} onPick={onPick} />
       </Layout>
     </Layout>
   );

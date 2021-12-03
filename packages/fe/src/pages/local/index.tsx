@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PageHeader from '@/components/PageHeader';
 import { Layout, message } from 'antd';
-import Teleprompter, { TeleprompterController } from '@/components/Teleprompter';
+import Teleprompter, {
+  TeleprompterController,
+} from '@/components/Teleprompter';
 import PageContent from '@/components/PageContent';
 import Controller, { ControllerValues } from './components/Controller';
 import { debounce } from 'lodash';
@@ -12,22 +14,25 @@ import { configUseState } from '@/common/useStateInitialFunctions';
 import { useLocation } from 'umi';
 import { getProject, Project } from '@/common/project';
 
-export interface LocalPageProps {
-
-}
+export interface LocalPageProps {}
 
 const LocalPage: React.FC<LocalPageProps> = () => {
   const [config, setConfig] = useState(configUseState);
   useEffect(() => {
     storage.set(STORAGE_KEY.config, config);
-  }, [config])
+  }, [config]);
 
   const [estimateDuration, setEstimateDuration] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [controller, setController] = useState<TeleprompterController | null>(null);
+  const [controller, setController] = useState<TeleprompterController | null>(
+    null,
+  );
   const [project, setProject] = useState<Project | null>(null);
 
-  const onControllerValueChange = debounce((values: ControllerValues) => setConfig(old => ({...old, ...values})), 50);
+  const onControllerValueChange = debounce(
+    (values: ControllerValues) => setConfig((old) => ({ ...old, ...values })),
+    50,
+  );
 
   const remainingTime = estimateDuration - estimateDuration * progress;
 
@@ -50,27 +55,38 @@ const LocalPage: React.FC<LocalPageProps> = () => {
 
       setProject(project);
       document.title = `${project.name} - 摸鱼提词器`;
-    })
+    });
   }, [location.search]);
 
-  return <>
-    <Layout>
-      <PageHeader
-        center={<Controller reset={controller ? controller.reset : undefined} initialValues={config} onChange={onControllerValueChange}/>}
-        right={<span>-{formatDuration(remainingTime)}</span>}
-        autoHide
-      />
-      <PageContent>
-        <Teleprompter
-          onEstimatedDurationUpdate={estimateDuration => setEstimateDuration(estimateDuration)}
-          onProgress={progress => setProgress(progress)}
-          onControllerAvailable={controller => setController(controller)}
-          {...config}>
-        {project ? project.content : ''}
-        </Teleprompter>
-      </PageContent>
-    </Layout>
-  </>;
+  return (
+    <>
+      <Layout>
+        <PageHeader
+          center={
+            <Controller
+              reset={controller ? controller.reset : undefined}
+              initialValues={config}
+              onChange={onControllerValueChange}
+            />
+          }
+          right={<span>-{formatDuration(remainingTime)}</span>}
+          autoHide
+        />
+        <PageContent>
+          <Teleprompter
+            onEstimatedDurationUpdate={(estimateDuration) =>
+              setEstimateDuration(estimateDuration)
+            }
+            onProgress={(progress) => setProgress(progress)}
+            onControllerAvailable={(controller) => setController(controller)}
+            {...config}
+          >
+            {project ? project.content : ''}
+          </Teleprompter>
+        </PageContent>
+      </Layout>
+    </>
+  );
 };
 
 export default LocalPage;

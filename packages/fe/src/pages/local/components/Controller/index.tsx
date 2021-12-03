@@ -6,69 +6,90 @@ import {
   FieldTimeOutlined,
   FontColorsOutlined,
   ReloadOutlined,
-  Loading3QuartersOutlined
+  Loading3QuartersOutlined,
 } from '@ant-design/icons';
 import { CONFIG_RANGE } from '@/const';
 import Fullscreen from '@/components/Fullscreen';
 
 export interface ControllerValues {
-  fontSize: number
-  speed: number
-  mirror: boolean
-  showProgress: boolean
+  fontSize: number;
+  speed: number;
+  mirror: boolean;
+  showProgress: boolean;
 }
 
 export interface ControllerProps {
-  initialValues: ControllerValues
-  onChange?: (values: ControllerValues) => void
-  reset?: () => void
+  initialValues: ControllerValues;
+  onChange?: (values: ControllerValues) => void;
+  reset?: () => void;
 }
 
-const Controller: React.FC<ControllerProps> = ({ onChange, initialValues, reset }) => {
+const Controller: React.FC<ControllerProps> = ({
+  onChange,
+  initialValues,
+  reset,
+}) => {
   const [config, setConfig] = useState(initialValues);
 
   function _onChange(values: Partial<ControllerValues>): void {
-    const newConfig = {...config, ...values};
+    const newConfig = { ...config, ...values };
     setConfig(newConfig);
     if (onChange) {
       onChange(newConfig);
     }
   }
 
-  return <div className={styles.controller}>
-    <div className={styles.group}>
-      <FontSizeOutlined/>
-      <Slider
-        min={CONFIG_RANGE.fontSize[0]} max={CONFIG_RANGE.fontSize[1]} style={{ width: '100px' }}
-        defaultValue={config.fontSize}
-        onChange={value => _onChange({fontSize: value})}
-        tooltipVisible={false}/>
-    </div>
+  return (
+    <div className={styles.controller}>
+      <div className={styles.group}>
+        <FontSizeOutlined />
+        <Slider
+          min={CONFIG_RANGE.fontSize[0]}
+          max={CONFIG_RANGE.fontSize[1]}
+          style={{ width: '100px' }}
+          defaultValue={config.fontSize}
+          onChange={(value) => _onChange({ fontSize: value })}
+          tooltipVisible={false}
+        />
+      </div>
 
-    <div className={styles.group}>
-      <FieldTimeOutlined/>
-      <Slider
-        min={CONFIG_RANGE.speed[0]} max={CONFIG_RANGE.speed[1]} style={{ width: '100px' }}
-        defaultValue={config.speed}
-        onChange={value => _onChange({speed: value})}
-        tooltipVisible={false}/>
-    </div>
+      <div className={styles.group}>
+        <FieldTimeOutlined />
+        <Slider
+          min={CONFIG_RANGE.speed[0]}
+          max={CONFIG_RANGE.speed[1]}
+          style={{ width: '100px' }}
+          defaultValue={config.speed}
+          onChange={(value) => _onChange({ speed: value })}
+          tooltipVisible={false}
+        />
+      </div>
 
-    <div className={styles.group} >
-      <FontColorsOutlined style={{ transform: 'scaleY(-1)' }}/>
-      <Switch defaultChecked={config.mirror} onChange={value => _onChange({mirror: value})}/>
-    </div>
+      <div className={styles.group}>
+        <FontColorsOutlined style={{ transform: 'scaleY(-1)' }} />
+        <Switch
+          defaultChecked={config.mirror}
+          onChange={(value) => _onChange({ mirror: value })}
+        />
+      </div>
 
-    <div className={styles.group} >
-      <Loading3QuartersOutlined/>
-      <Switch defaultChecked={config.showProgress} onChange={value => _onChange({showProgress: value})}/>
-    </div>
+      <div className={styles.group}>
+        <Loading3QuartersOutlined />
+        <Switch
+          defaultChecked={config.showProgress}
+          onChange={(value) => _onChange({ showProgress: value })}
+        />
+      </div>
 
-    <div className={styles.group}>
-      <ReloadOutlined onClick={() => reset && reset()} style={{ cursor: 'pointer' }}/>
-      <Fullscreen/>
+      <div className={styles.group}>
+        <ReloadOutlined
+          onClick={() => reset && reset()}
+          style={{ cursor: 'pointer' }}
+        />
+        <Fullscreen />
+      </div>
     </div>
-  </div>;
+  );
 };
 
 export default Controller;

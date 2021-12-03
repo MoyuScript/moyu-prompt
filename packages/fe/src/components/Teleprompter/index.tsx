@@ -1,31 +1,38 @@
 import { CSSProperties } from '@umijs/renderer-react/node_modules/@types/react';
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import { min, max } from 'lodash';
 
 import styles from './index.less';
 
 export interface TeleprompterController {
-  scrollBy: (deltaY: number) => void
-  start: () => void
-  pause: () => void
-  reset: () => void
+  scrollBy: (deltaY: number) => void;
+  start: () => void;
+  pause: () => void;
+  reset: () => void;
+  switch: () => void;
 }
 
 export interface TeleprompterConfig {
-  fontSize?: number
-  speed?: number
-  mirror?: boolean
-  showMask?: boolean
-  showProgress?: boolean
+  fontSize?: number;
+  speed?: number;
+  mirror?: boolean;
+  showMask?: boolean;
+  showProgress?: boolean;
 }
 
 export interface TeleprompterProps extends TeleprompterConfig {
-  children?: string
-  switchScrollingStatusWhenTap?: boolean
-  onControllerAvailable?: (controller: TeleprompterController) => void
-  onProgress?: (progress: number) => void
-  onEstimatedDurationUpdate?: (timeRemaining: number) => void
-  onScrollingStatusChange?: (status: boolean) => void
+  children?: string;
+  userInputControllable?: boolean;
+  onControllerAvailable?: (controller: TeleprompterController) => void;
+  onProgress?: (progress: number) => void;
+  onEstimatedDurationUpdate?: (timeRemaining: number) => void;
+  onScrollingStatusChange?: (status: boolean) => void;
 }
 
 const Teleprompter: React.FC<TeleprompterProps> = ({
@@ -35,7 +42,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   mirror = false,
   showMask = true,
   showProgress = true,
-  switchScrollingStatusWhenTap = true,
+  userInputControllable = true,
   onControllerAvailable,
   onEstimatedDurationUpdate,
   onProgress,
@@ -55,7 +62,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   // 控制器初始化
   const controller: TeleprompterController = {
     scrollBy(deltaY) {
-      setPosition(p => p + deltaY);
+      setPosition((p) => p + deltaY);
     },
 
     start() {
@@ -69,12 +76,18 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
     reset() {
       controller.pause();
       setPosition(0);
-    }
+    },
+
+    switch() {
+      setScrolling((s) => !s);
+    },
   };
 
   const scrollToPosition = useCallback((scroll: number): number => {
     if (mirror) {
-      return (height - window.innerHeight) - scroll + (ref.current?.offsetTop || 0);
+      return (
+        height - window.innerHeight - scroll + (ref.current?.offsetTop || 0)
+      );
     } else {
       return scroll;
     }
@@ -82,7 +95,9 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
 
   const positionToScroll = useCallback((position: number): number => {
     if (mirror) {
-      return (height - window.innerHeight) - position + (ref.current?.offsetTop || 0);
+      return (
+        height - window.innerHeight - position + (ref.current?.offsetTop || 0)
+      );
     } else {
       return position;
     }
@@ -100,7 +115,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
 
     function updatePosition() {
       if (intervalId) {
-        setPosition(position => {
+        setPosition((position) => {
           if (position >= height - window.innerHeight) {
             // 结束
             controller.pause();
@@ -108,7 +123,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
           } else {
             return position + stepY;
           }
-      });
+        });
       }
     }
     if (scrolling) {
@@ -140,7 +155,6 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
     return (height - window.innerHeight) * (16 / stepY);
   }
   useEffect(() => {
-
     if (onEstimatedDurationUpdate) {
       onEstimatedDurationUpdate(calculateEstimatedDuration());
     }
@@ -173,13 +187,13 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   // 滚动
   useEffect(() => {
     document.documentElement.scrollTo({
-      top: positionToScroll(position)
-    })
+      top: positionToScroll(position),
+    });
   }, dependencies);
 
   // 点击切换滚动状态
   function switchScrollingStatus() {
-    if (!switchScrollingStatusWhenTap) {
+    if (!userInputControllable) {
       return;
     }
 
@@ -193,6 +207,10 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
   // 同步用户滚动
   useEffect(() => {
     function syncUserScroll(ev: Event) {
+      if (!userInputControllable) {
+        ev.preventDefault();
+        return;
+      }
       const newPosition = scrollToPosition(window.scrollY);
 
       // 识别是否为用户滚动，避免重复更新导致时间变慢
@@ -200,35 +218,46 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
         // 认为是用户滚动，更新位置
         setPosition(newPosition);
       }
-
     }
     window.addEventListener('scroll', syncUserScroll);
 
     return () => {
       window.removeEventListener('scroll', syncUserScroll);
-    }
+    };
   }, dependencies);
 
   const style: CSSProperties = {
     fontSize: `${fontSize}px`,
   };
 
-  return <div
-    ref={ref}
-    style={style}
-    className={`${styles.teleprompter}`}
-    onClick={switchScrollingStatus}>
-    <div className={`${styles.content} ${mirror ? styles.mirror : ''}`}>
-      {children?.split('\n').map((v, n) => <p key={n}>{v}</p>)}
-    </div>
-    {showMask && <div className={styles.mask}>
-      <div/>
-      <div>
-        {showProgress && <div className={styles.progress} style={{ width: `${progress * 100}%` }}/>}
+  return (
+    <div
+      ref={ref}
+      style={style}
+      className={`${styles.teleprompter}`}
+      onClick={switchScrollingStatus}
+    >
+      <div className={`${styles.content} ${mirror ? styles.mirror : ''}`}>
+        {children?.split('\n').map((v, n) => (
+          <p key={n}>{v}</p>
+        ))}
       </div>
-      <div/>
-    </div>}
-  </div>;
+      {showMask && (
+        <div className={styles.mask}>
+          <div />
+          <div>
+            {showProgress && (
+              <div
+                className={styles.progress}
+                style={{ width: `${progress * 100}%` }}
+              />
+            )}
+          </div>
+          <div />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Teleprompter;

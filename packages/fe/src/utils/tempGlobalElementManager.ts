@@ -1,8 +1,8 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes } from 'react';
 import { merge } from 'lodash';
 
 export default class TempGlobalElementManager {
-  private el: HTMLDivElement
+  private el: HTMLDivElement;
 
   constructor(attrs: HTMLAttributes<HTMLDivElement> = {}) {
     this.el = document.createElement('div');
@@ -34,4 +34,3 @@ export default class TempGlobalElementManager {
     return this.el;
   }
 }
-

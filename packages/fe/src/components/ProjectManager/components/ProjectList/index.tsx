@@ -4,30 +4,42 @@ import React, { useState } from 'react';
 import styles from './index.less';
 
 export interface ActionEvent {
-  name: 'open' | 'delete' | 'edit'
-  project: Project
+  name: 'open' | 'delete' | 'edit';
+  project: Project;
 }
 
 export interface ProjectListProps {
-  projects: Project[]
-  pickedProject: Project | null,
-  onAction: (action: ActionEvent) => void
-  onPickChange: (project: Project) => void
+  projects: Project[];
+  pickedProject: Project | null;
+  onAction: (action: ActionEvent) => void;
+  onPickChange: (project: Project) => void;
 }
 
-const ProjectList: React.FC<ProjectListProps> = ({ projects, onAction, onPickChange, pickedProject }) => {
-  return <div className={styles.projectList}>
-    {projects.map((v) => (
-      <div key={v.id} className={`${styles.item} ${pickedProject ? (pickedProject.id === v.id ? styles.pick : '') : ''}`}
-        onClick={() => {
-          onPickChange(v);
-        }}
-        onDoubleClick={() => onAction({name: 'open', project: v})}>
-        <div className={styles.text}>{v.content}</div>
-        <div className={styles.name}>{v.name}</div>
-      </div>
-    ))}
-  </div>;
+const ProjectList: React.FC<ProjectListProps> = ({
+  projects,
+  onAction,
+  onPickChange,
+  pickedProject,
+}) => {
+  return (
+    <div className={styles.projectList}>
+      {projects.map((v) => (
+        <div
+          key={v.id}
+          className={`${styles.item} ${
+            pickedProject ? (pickedProject.id === v.id ? styles.pick : '') : ''
+          }`}
+          onClick={() => {
+            onPickChange(v);
+          }}
+          onDoubleClick={() => onAction({ name: 'open', project: v })}
+        >
+          <div className={styles.text}>{v.content}</div>
+          <div className={styles.name}>{v.name}</div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default ProjectList;

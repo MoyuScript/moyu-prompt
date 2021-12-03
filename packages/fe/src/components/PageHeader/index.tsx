@@ -4,12 +4,16 @@ import { Link, history } from 'umi';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import styles from './index.less';
 export interface PageHeaderProps {
-  center?: React.ReactNode,
-  right?: React.ReactNode,
-  autoHide?: boolean
+  center?: React.ReactNode;
+  right?: React.ReactNode;
+  autoHide?: boolean;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ center, right, autoHide = false }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({
+  center,
+  right,
+  autoHide = false,
+}) => {
   const [hide, setHide] = useState(false);
 
   // 自动隐藏
@@ -43,20 +47,20 @@ const PageHeader: React.FC<PageHeaderProps> = ({ center, right, autoHide = false
         }
         window.removeEventListener('mousemove', onMouseMove);
       }
-    }
-  }, [autoHide])
+    };
+  }, [autoHide]);
 
-  return <Layout.Header className={`${styles.header} ${hide ? styles.hide : ''}`}>
-    <div className={styles.area}>
-      <a onClick={() => history.goBack()}><ArrowLeftOutlined/></a>
-    </div>
-    <div className={styles.area}>
-      {center}
-    </div>
-    <div className={styles.area}>
-      {right}
-    </div>
-  </Layout.Header>;
+  return (
+    <Layout.Header className={`${styles.header} ${hide ? styles.hide : ''}`}>
+      <div className={styles.area}>
+        <a onClick={() => history.goBack()}>
+          <ArrowLeftOutlined />
+        </a>
+      </div>
+      <div className={styles.area}>{center}</div>
+      <div className={styles.area}>{right}</div>
+    </Layout.Header>
+  );
 };
 
 export default PageHeader;

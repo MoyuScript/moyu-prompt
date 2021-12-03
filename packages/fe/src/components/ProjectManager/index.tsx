@@ -126,7 +126,7 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({ visible, onPick }) => {
         }
       },
       width: '90vw',
-      centered: true
+      centered: true,
     });
   };
 
@@ -196,7 +196,7 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({ visible, onPick }) => {
         ),
         onCancel: () => onPick(null),
         width: '90vw',
-        centered: true
+        centered: true,
       }}
     >
       <div className={styles.content}>

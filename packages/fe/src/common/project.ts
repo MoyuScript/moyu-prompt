@@ -7,18 +7,21 @@ const DATABASE_CONFIG = {
 };
 
 export interface Project {
-  id: number
-  name: string
-  content: string
+  id: number;
+  name: string;
+  content: string;
 }
 
 async function openDatabase() {
   const db = await openDB(DATABASE_CONFIG.name, DATABASE_CONFIG.version, {
     upgrade(db, oldVersion) {
       if (oldVersion < 1) {
-        db.createObjectStore(DATABASE_CONFIG.name, {autoIncrement: true, keyPath: 'id'});
+        db.createObjectStore(DATABASE_CONFIG.name, {
+          autoIncrement: true,
+          keyPath: 'id',
+        });
       }
-    }
+    },
   });
 
   return db;
@@ -30,17 +33,22 @@ export async function deleteProject(id: Project['id']): Promise<void> {
   return await db.delete(DATABASE_CONFIG.name, id);
 }
 
-export async function createProject(project: Omit<Project, 'id'>): Promise<Project> {
+export async function createProject(
+  project: Omit<Project, 'id'>,
+): Promise<Project> {
   const db = await openDatabase();
 
   const id = await db.add(DATABASE_CONFIG.name, project);
   return {
     id: Number(id),
-    ...project
-  }
+    ...project,
+  };
 }
 
-export async function editProject(id: Project['id'], project: Omit<Partial<Project>, 'id'>): Promise<void> {
+export async function editProject(
+  id: Project['id'],
+  project: Omit<Partial<Project>, 'id'>,
+): Promise<void> {
   const db = await openDatabase();
 
   const oldData = await db.get(DATABASE_CONFIG.name, id);
