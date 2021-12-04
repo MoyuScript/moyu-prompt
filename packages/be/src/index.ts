@@ -23,7 +23,13 @@ const io = new Server({
 });
 
 io.on('connection', (socket) => {
-  const ip = socket.request.socket.remoteAddress as string;
+  const ip = socket.request.headers['x-real-ip'] as string | undefined || socket.request.socket.remoteAddress;
+
+  if (!ip) {
+    socket.disconnect(true);
+    return;
+  }
+
   // 10 秒内表明身份是遥控器还是显示器，否则断开连接
   const timeoutIdForAuthentication = setTimeout(() => {
     if (socket.connected) {
