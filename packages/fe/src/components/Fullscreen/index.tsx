@@ -3,7 +3,7 @@ import styles from './index.less';
 import { FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons';
 
 export interface FullscreenProps {
-  showText?: boolean
+  showText?: boolean;
 }
 
 const Fullscreen: React.FC<FullscreenProps> = ({ showText }) => {
@@ -24,7 +24,7 @@ const Fullscreen: React.FC<FullscreenProps> = ({ showText }) => {
   async function on() {
     try {
       await document.documentElement.requestFullscreen({
-        navigationUI: 'hide'
+        navigationUI: 'hide',
       });
       setFullscreen(true);
     } catch (e) {}
@@ -38,9 +38,13 @@ const Fullscreen: React.FC<FullscreenProps> = ({ showText }) => {
   }
 
   return fullscreen ? (
-    <span onClick={off} className={styles.fullscreen} ><FullscreenExitOutlined/> {showText && '切换全屏'}</span>
+    <span onClick={off} className={styles.fullscreen}>
+      <FullscreenExitOutlined /> {showText && '切换全屏'}
+    </span>
   ) : (
-    <span onClick={on}  className={styles.fullscreen} ><FullscreenOutlined/> {showText && '切换全屏'}</span>
+    <span onClick={on} className={styles.fullscreen}>
+      <FullscreenOutlined /> {showText && '切换全屏'}
+    </span>
   );
 };
 

@@ -1,4 +1,10 @@
-import { MouseEventHandler, TouchEventHandler, useState, useRef, useEffect } from 'react';
+import {
+  MouseEventHandler,
+  TouchEventHandler,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import React from 'react';
 import styles from './index.less';
 import { getTouch } from '@/utils/touch';
@@ -14,35 +20,36 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
   const [mouseMoving, setMouseMoving] = useState(false);
   const padRef = useRef<HTMLDivElement>(null);
 
-  const onMouse: MouseEventHandler = (e) => {
+  const onMouse = (e: MouseEvent) => {
     e.preventDefault();
 
     if (e.type === 'mousedown') {
       if (e.button === 0) {
+        const startTime = performance.now();
         setMouseDown(true);
         window.addEventListener(
           'mouseup',
           () => {
+            setMouseMoving(false);
             setMouseDown(false);
+            const endTime = performance.now();
 
-            // 延迟取消鼠标移动状态，用以区分点击
-            setTimeout(() => setMouseMoving(false), 100);
+            if (endTime - startTime <= 200 || !mouseMoving) {
+              // click
+              if (onTap) {
+                onTap();
+              }
+            }
           },
           { once: true },
         );
       }
     } else if (e.type === 'mousemove') {
       if (mouseDown) {
-        if (!mouseMoving) {
-          setMouseMoving(true);
-        }
+        setMouseMoving(true);
         if (onScroll) {
           onScroll(e.movementY);
         }
-      }
-    } else if (e.type === 'click') {
-      if (onTap && !mouseMoving) {
-        onTap();
       }
     }
   };
@@ -50,13 +57,23 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
   const onTouch = (e: TouchEvent) => {
     e.preventDefault();
     if (e.type === 'touchstart') {
-      navigator.vibrate([50]);
+      const startTime = performance.now();
+
       if (touch === null) {
         setTouch(e.touches.item(0));
-
         window.addEventListener(
           'touchend',
           () => {
+            setMouseMoving(false);
+            const endTime = performance.now();
+
+            if (endTime - startTime <= 200) {
+              // click
+              navigator.vibrate([50]);
+              if (onTap) {
+                onTap();
+              }
+            }
             setTouch(null);
           },
           { once: true },
@@ -71,6 +88,10 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
 
       if (currentTouch !== null) {
         const deltaY = currentTouch.clientY - touch!.clientY;
+
+        if (deltaY !== 0) {
+          setMouseMoving(true);
+        }
         setTouch(currentTouch);
 
         if (onScroll) {
@@ -83,28 +104,24 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
   useEffect(() => {
     if (padRef.current) {
       const $ = padRef.current;
-      $.addEventListener('touchstart', onTouch, {passive: false});
-      $.addEventListener('touchmove', onTouch, {passive: false});
+      $.addEventListener('mousedown', onMouse, { passive: false });
+      $.addEventListener('mousemove', onMouse, { passive: false });
+      $.addEventListener('touchstart', onTouch, { passive: false });
+      $.addEventListener('touchmove', onTouch, { passive: false });
     }
 
     return () => {
       if (padRef.current) {
         const $ = padRef.current;
-      $.removeEventListener('touchstart', onTouch);
-      $.removeEventListener('touchmove', onTouch);
+        $.removeEventListener('mousedown', onMouse);
+        $.removeEventListener('mousemove', onMouse);
+        $.removeEventListener('touchstart', onTouch);
+        $.removeEventListener('touchmove', onTouch);
       }
-    }
-  }, [padRef.current])
+    };
+  }, [padRef.current, touch, mouseDown, mouseMoving]);
 
-  return (
-    <div
-      className={styles.touchPad}
-      onMouseDown={onMouse}
-      onMouseMove={onMouse}
-      onClick={onMouse}
-      ref={padRef}
-    />
-  );
+  return <div className={styles.touchPad} ref={padRef} />;
 };
 
 export default TouchPad;

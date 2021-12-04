@@ -14,10 +14,13 @@ const Header: React.FC<HeaderProps> = () => {
   return (
     <Layout.Header className={styles.header}>
       <Link to="/" style={{ color: 'inherit', height: '100%' }}>
-        <img src='assets/logo@500x500.png' style={{height: '100%', display: 'block'}} />
+        <img
+          src="assets/logo@500x500.png"
+          style={{ height: '100%', display: 'block' }}
+        />
       </Link>
       <div>
-        <InstallButton/>
+        <InstallButton />
       </div>
       <NavLink>
         <NavLinkItem href="https://space.bilibili.com/660303135">

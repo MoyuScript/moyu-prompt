@@ -136,7 +136,16 @@ const HelpPage: React.FC<HelpPageProps> = () => {
       <Layout>
         <PageHeader center={'帮助'} />
         <PageContent>
-          <div style={{padding: '0 4vw 10vw', color: '#d0d0d0', background: 'black', maxWidth: '1000px', margin: '0 auto'}} className='markdown-body'>
+          <div
+            style={{
+              padding: '0 4vw 10vw',
+              color: '#d0d0d0',
+              background: 'black',
+              maxWidth: '1000px',
+              margin: '0 auto',
+            }}
+            className="markdown-body"
+          >
             <Markdown>{content}</Markdown>
           </div>
         </PageContent>

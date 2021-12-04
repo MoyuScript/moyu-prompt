@@ -37,6 +37,6 @@ export default defineConfig({
     dark: true,
   },
   history: {
-    type: 'hash'
-  }
+    type: 'hash',
+  },
 });

@@ -23,31 +23,34 @@ async function cacheOrFetch(request) {
   return resp;
 }
 
-this.addEventListener('install', function(ev) {
+this.addEventListener('install', function (ev) {
   self.skipWaiting();
 });
 
-this.addEventListener('fetch', function(ev) {
-  if (location.hostname.includes('localhost') || location.hostname.startsWith('192.168')) {
+this.addEventListener('fetch', function (ev) {
+  if (
+    location.hostname.includes('localhost') ||
+    location.hostname.startsWith('192.168')
+  ) {
     // 调试环境不缓存
     ev.respondWith(fetch(ev.request));
     return;
   }
 
-  ev.respondWith(
-    cacheOrFetch(ev.request)
-  );
+  ev.respondWith(cacheOrFetch(ev.request));
 });
 
-this.addEventListener('activate', function(ev) {
+this.addEventListener('activate', function (ev) {
   self.clients.claim();
   ev.waitUntil(
     caches.keys().then((keyList) => {
-      return Promise.all(keyList.map((key) => {
-        if (key !== VERSION) {
-          return caches.delete(key);
-        }
-      }));
-    })
+      return Promise.all(
+        keyList.map((key) => {
+          if (key !== VERSION) {
+            return caches.delete(key);
+          }
+        }),
+      );
+    }),
   );
 });

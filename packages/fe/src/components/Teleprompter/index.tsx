@@ -210,7 +210,7 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
       if (!userInputControllable) {
         ev.preventDefault();
         window.scrollTo({
-          top: positionToScroll(position)
+          top: positionToScroll(position),
         });
         return;
       }

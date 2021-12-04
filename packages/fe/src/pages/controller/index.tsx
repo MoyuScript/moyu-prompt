@@ -130,7 +130,7 @@ const ControllerPage: React.FC<ControllerPageProps> = () => {
 
   const headerRight = (
     <div>
-      <Fullscreen/>
+      <Fullscreen />
       <ConnectionStatus connected={connectionStage === 2} />
     </div>
   );

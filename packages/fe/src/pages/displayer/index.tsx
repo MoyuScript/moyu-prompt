@@ -113,7 +113,7 @@ const DisplayerPage: React.FC<DisplayerPageProps> = () => {
 
   const headerRight = (
     <div>
-      <Fullscreen/>
+      <Fullscreen />
       <ConnectionStatus connected={connected} />
     </div>
   );

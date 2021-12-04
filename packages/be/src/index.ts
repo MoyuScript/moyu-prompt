@@ -23,7 +23,9 @@ const io = new Server({
 });
 
 io.on('connection', (socket) => {
-  const ip = socket.request.headers['x-real-ip'] as string | undefined || socket.request.socket.remoteAddress;
+  const ip =
+    (socket.request.headers['x-real-ip'] as string | undefined) ||
+    socket.request.socket.remoteAddress;
 
   if (!ip) {
     socket.disconnect(true);

@@ -32,13 +32,21 @@ export default function IndexPage() {
       <Header />
       <Layout className={styles.content}>
         <h1 className={styles.title}>摸鱼提词器</h1>
-        <div className={styles.tip}>（请横屏使用 {<span style={{color: '#00e0ff'}}><Fullscreen showText/></span>}）</div>
+        <div className={styles.tip}>
+          （请横屏使用{' '}
+          {
+            <span style={{ color: '#00e0ff' }}>
+              <Fullscreen showText />
+            </span>
+          }
+          ）
+        </div>
         <div className={styles.btnGroup}>
           <Button
             className={styles.btn}
             onClick={() => {
               if (!navigator.onLine) {
-                message.error('请检查你的网络连接！')
+                message.error('请检查你的网络连接！');
                 return;
               }
               setProjectManagerVisible(true);
@@ -47,13 +55,16 @@ export default function IndexPage() {
           >
             遥控器
           </Button>
-          <Button className={styles.btn} onClick={() => {
-            if (!navigator.onLine) {
-              message.error('请检查你的网络连接！')
-              return;
-            }
-            navTo('/displayer')
-          }}>
+          <Button
+            className={styles.btn}
+            onClick={() => {
+              if (!navigator.onLine) {
+                message.error('请检查你的网络连接！');
+                return;
+              }
+              navTo('/displayer');
+            }}
+          >
             显示器
           </Button>
           <Button
