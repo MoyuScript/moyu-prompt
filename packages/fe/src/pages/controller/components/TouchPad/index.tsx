@@ -1,4 +1,4 @@
-import { MouseEventHandler, TouchEventHandler, useState } from 'react';
+import { MouseEventHandler, TouchEventHandler, useState, useRef, useEffect } from 'react';
 import React from 'react';
 import styles from './index.less';
 import { getTouch } from '@/utils/touch';
@@ -12,6 +12,7 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
   const [touch, setTouch] = useState<null | React.Touch>(null);
   const [mouseDown, setMouseDown] = useState(false);
   const [mouseMoving, setMouseMoving] = useState(false);
+  const padRef = useRef<HTMLDivElement>(null);
 
   const onMouse: MouseEventHandler = (e) => {
     e.preventDefault();
@@ -46,7 +47,8 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
     }
   };
 
-  const onTouch: TouchEventHandler = (e) => {
+  const onTouch = (e: TouchEvent) => {
+    e.preventDefault();
     if (e.type === 'touchstart') {
       navigator.vibrate([50]);
       if (touch === null) {
@@ -61,7 +63,11 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
         );
       }
     } else if (e.type === 'touchmove') {
-      const currentTouch = getTouch(e.changedTouches, touch!.identifier);
+      if (!touch) {
+        return;
+      }
+
+      const currentTouch = getTouch(e.changedTouches, touch.identifier);
 
       if (currentTouch !== null) {
         const deltaY = currentTouch.clientY - touch!.clientY;
@@ -74,14 +80,29 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
     }
   };
 
+  useEffect(() => {
+    if (padRef.current) {
+      const $ = padRef.current;
+      $.addEventListener('touchstart', onTouch, {passive: false});
+      $.addEventListener('touchmove', onTouch, {passive: false});
+    }
+
+    return () => {
+      if (padRef.current) {
+        const $ = padRef.current;
+      $.removeEventListener('touchstart', onTouch);
+      $.removeEventListener('touchmove', onTouch);
+      }
+    }
+  }, [padRef.current])
+
   return (
     <div
       className={styles.touchPad}
       onMouseDown={onMouse}
       onMouseMove={onMouse}
       onClick={onMouse}
-      onTouchStart={onTouch}
-      onTouchMove={onTouch}
+      ref={padRef}
     />
   );
 };

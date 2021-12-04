@@ -1,4 +1,4 @@
-const VERSION = 'v2';
+const VERSION = 'v3';
 
 /**
  *
@@ -28,6 +28,12 @@ this.addEventListener('install', function(ev) {
 });
 
 this.addEventListener('fetch', function(ev) {
+  if (location.hostname.includes('localhost') || location.hostname.startsWith('192.168')) {
+    // 调试环境不缓存
+    ev.respondWith(fetch(ev.request));
+    return;
+  }
+
   ev.respondWith(
     cacheOrFetch(ev.request)
   );
