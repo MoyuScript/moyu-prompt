@@ -3,9 +3,11 @@
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
-    "husky": "^7.0.0"
+    "husky": "^7.0.0",
+    "prettier": "^2.5.0"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prettier": "prettier --write \"./packages/**/*.{js,jsx,tsx,ts,less,md,json}\""
   }
 }
