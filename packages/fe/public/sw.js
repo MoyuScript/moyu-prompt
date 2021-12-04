@@ -1,3 +1,4 @@
+const VERSION = 'v2';
 
 /**
  *
@@ -16,18 +17,31 @@ async function cacheOrFetch(request) {
     return resp;
   }
 
-  const cache = await caches.open('v1');
+  const cache = await caches.open(VERSION);
   cache.put(request, resp.clone());
 
   return resp;
 }
 
 this.addEventListener('install', function(ev) {
-  ev.skipWait();
+  self.skipWaiting();
 });
 
 this.addEventListener('fetch', function(ev) {
   ev.respondWith(
     cacheOrFetch(ev.request)
+  );
+});
+
+this.addEventListener('activate', function(ev) {
+  self.clients.claim();
+  ev.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(keyList.map((key) => {
+        if (key !== VERSION) {
+          return caches.delete(key);
+        }
+      }));
+    })
   );
 });
