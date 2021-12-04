@@ -16,4 +16,5 @@ export const DEFAULT_CONFIG: Required<TeleprompterConfig> = {
 
 export const STORAGE_KEY = {
   config: 'config',
+  installPromptDisabled: 'installPromptDisabled'
 };

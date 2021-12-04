@@ -209,6 +209,9 @@ const Teleprompter: React.FC<TeleprompterProps> = ({
     function syncUserScroll(ev: Event) {
       if (!userInputControllable) {
         ev.preventDefault();
+        window.scrollTo({
+          top: positionToScroll(position)
+        });
         return;
       }
       const newPosition = scrollToPosition(window.scrollY);

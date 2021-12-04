@@ -2,6 +2,7 @@ import GithubFilled from '@ant-design/icons/lib/icons/GithubFilled';
 import { Layout } from 'antd';
 import React from 'react';
 import { Link } from 'umi';
+import InstallButton from './components/InstallButton';
 import NavLink from './components/NavLink';
 import NavLinkItem from './components/NavLinkItem';
 
@@ -12,11 +13,12 @@ export interface HeaderProps {}
 const Header: React.FC<HeaderProps> = () => {
   return (
     <Layout.Header className={styles.header}>
-      <h1 className={styles.title}>
-        <Link to="/" style={{ color: 'inherit' }}>
-          摸鱼提词器
-        </Link>
-      </h1>
+      <Link to="/" style={{ color: 'inherit', height: '100%' }}>
+        <img src='assets/logo@500x500.png' style={{height: '100%', display: 'block'}} />
+      </Link>
+      <div>
+        <InstallButton/>
+      </div>
       <NavLink>
         <NavLinkItem href="https://space.bilibili.com/660303135">
           哔哩哔哩

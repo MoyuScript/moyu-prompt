@@ -16,6 +16,7 @@ import * as storage from '@/utils/localStorage';
 import { STORAGE_KEY } from '@/const';
 import { debounce } from 'lodash';
 import { Socket } from 'socket.io-client';
+import Fullscreen from '@/components/Fullscreen';
 
 export interface DisplayerPageProps {}
 
@@ -54,7 +55,6 @@ const DisplayerPage: React.FC<DisplayerPageProps> = () => {
         sock.on('join', () => {
           setConnected(true);
           message.success('遥控器已连接');
-          console.log(config);
           // 同步本地设置给遥控器
           sock.emit('syncConfig', config);
         });
@@ -112,9 +112,10 @@ const DisplayerPage: React.FC<DisplayerPageProps> = () => {
   );
 
   const headerRight = (
-    <>
+    <div>
+      <Fullscreen/>
       <ConnectionStatus connected={connected} />
-    </>
+    </div>
   );
 
   return (

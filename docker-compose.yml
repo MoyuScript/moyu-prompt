@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  fe:
+    build: ./packages/fe/
+    depends_on:
+      - be
+      - nginx
+    
+
+  be:
+    build: ./packages/be/
+
+  nginx:
+    image: nginx
+    ports:
+      - 8000:80
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+  

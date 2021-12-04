@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons';
 
-export interface FullscreenProps {}
+export interface FullscreenProps {
+  showText?: boolean
+}
 
-const Fullscreen: React.FC<FullscreenProps> = () => {
+const Fullscreen: React.FC<FullscreenProps> = ({ showText }) => {
   const [fullscreen, setFullscreen] = useState(!!document.fullscreenElement);
 
   useEffect(() => {
@@ -21,7 +23,9 @@ const Fullscreen: React.FC<FullscreenProps> = () => {
 
   async function on() {
     try {
-      await document.documentElement.requestFullscreen();
+      await document.documentElement.requestFullscreen({
+        navigationUI: 'hide'
+      });
       setFullscreen(true);
     } catch (e) {}
   }
@@ -34,9 +38,9 @@ const Fullscreen: React.FC<FullscreenProps> = () => {
   }
 
   return fullscreen ? (
-    <FullscreenExitOutlined className={styles.fullscreen} onClick={off} />
+    <span onClick={off} className={styles.fullscreen} ><FullscreenExitOutlined/> {showText && '切换全屏'}</span>
   ) : (
-    <FullscreenOutlined className={styles.fullscreen} onClick={on} />
+    <span onClick={on}  className={styles.fullscreen} ><FullscreenOutlined/> {showText && '切换全屏'}</span>
   );
 };
 

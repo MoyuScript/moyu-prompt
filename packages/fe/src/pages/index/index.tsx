@@ -1,14 +1,17 @@
 import styles from './index.less';
-import { history, Link } from 'umi';
+import { history, Link, useLocation } from 'umi';
 import { Anchor, Button, Layout } from 'antd';
 import Header from './components/Header';
 import { Project } from '@/common/project';
 import ProjectManager from '@/components/ProjectManager';
 import React, { useState } from 'react';
+import Fullscreen from '@/components/Fullscreen';
 
 export default function IndexPage() {
   const [projectManagerVisible, setProjectManagerVisible] = useState(false);
   const [onPickGoto, setOnPickGoto] = useState('');
+
+  const location = useLocation();
 
   function navTo(path: string): void {
     history.push(path);
@@ -16,7 +19,9 @@ export default function IndexPage() {
 
   function onPick(project: Project | null) {
     if (project) {
-      navTo(`${onPickGoto}?id=${project.id}`);
+      const search = new URLSearchParams(location.search);
+      search.set('id', project.id.toString());
+      navTo(`${onPickGoto}?${search.toString()}`);
     }
 
     setProjectManagerVisible(false);
@@ -27,7 +32,7 @@ export default function IndexPage() {
       <Header />
       <Layout className={styles.content}>
         <h1 className={styles.title}>摸鱼提词器</h1>
-        <div className={styles.tip}>（请横屏使用）</div>
+        <div className={styles.tip}>（请横屏使用 {<span style={{color: '#00e0ff'}}><Fullscreen showText/></span>}）</div>
         <div className={styles.btnGroup}>
           <Button
             className={styles.btn}

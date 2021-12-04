@@ -19,9 +19,6 @@ function generateConnectionCode(request: IncomingMessage): string {
 }
 
 const io = new Server({
-  cors: {
-    origin: ['http://localhost:8000'],
-  },
   transports: ['websocket'],
 });
 

@@ -19,8 +19,9 @@ import { CONFIG_RANGE, DEFAULT_CONFIG } from '@/const';
 import { TeleprompterConfig } from '@/components/Teleprompter';
 import createSocket from '@/common/socket';
 import { getProject, Project } from '@/common/project';
-import { history } from 'umi';
+import { history, useLocation } from 'umi';
 import { Socket } from 'socket.io-client';
+import Fullscreen from '@/components/Fullscreen';
 
 message.config({
   top: 100,
@@ -38,6 +39,8 @@ const ControllerPage: React.FC<ControllerPageProps> = () => {
   // 0 未连接，1 连接中，2 已连接，3 异常断开
   const [connectionStage, setConnectionStage] = useState(0);
 
+  const location = useLocation();
+
   useEffect(() => {
     const search = new URLSearchParams(location.search);
     const id = Number(search.get('id'));
@@ -54,12 +57,13 @@ const ControllerPage: React.FC<ControllerPageProps> = () => {
         history.push('/');
         return;
       }
-
+      console.log('Set', project)
       setProject(project);
     });
   }, []);
 
   useEffect(() => {
+    console.log(socket, project, connectionStage)
     if (socket && connectionStage === 2) {
       if (project) {
         socket.emit('updateContent', project.content);
@@ -127,9 +131,10 @@ const ControllerPage: React.FC<ControllerPageProps> = () => {
   }
 
   const headerRight = (
-    <>
+    <div>
+      <Fullscreen/>
       <ConnectionStatus connected={connectionStage === 2} />
-    </>
+    </div>
   );
 
   let headerCenter: React.ReactNode;
@@ -238,7 +243,6 @@ const ControllerPage: React.FC<ControllerPageProps> = () => {
                   maxFontSize,
                   percent,
                 );
-                console.log(fontSize, percent);
                 setConfig((c) => ({ ...c, fontSize }));
                 updateRemoteConfig({ fontSize });
               }}

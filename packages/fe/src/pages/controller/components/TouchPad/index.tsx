@@ -48,6 +48,7 @@ const TouchPad: React.FC<TouchPadProps> = ({ onScroll, onTap }) => {
 
   const onTouch: TouchEventHandler = (e) => {
     if (e.type === 'touchstart') {
+      navigator.vibrate([50]);
       if (touch === null) {
         setTouch(e.touches.item(0));
 

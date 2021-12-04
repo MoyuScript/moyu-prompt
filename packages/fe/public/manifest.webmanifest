@@ -1,0 +1,33 @@
+{
+  "short_name": "MoyuPrompt",
+  "name": "摸鱼提词器",
+  "icons": [
+    {
+      "src": "/assets/logo@500x500.png",
+      "type": "image/png",
+      "sizes": "500x500"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "fullscreen",
+  "scope": "/",
+  "theme_color": "#ffffff",
+  "screenshots": [
+    {
+      "src": "/assets/screenshot_1.jpg",
+      "type": "image/jpg",
+      "sizes": "1587x782"
+    },
+    {
+      "src": "/assets/screenshot_2.jpg",
+      "type": "image/jpg",
+      "sizes": "1587x782"
+    },
+    {
+      "src": "/assets/screenshot_3.jpg",
+      "type": "image/jpg",
+      "sizes": "1587x782"
+    }
+  ]
+}

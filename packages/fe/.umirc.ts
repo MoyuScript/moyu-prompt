@@ -4,6 +4,7 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
+  favicon: 'assets/logo@64x64.jpg',
   routes: [
     {
       path: '/',
@@ -35,4 +36,7 @@ export default defineConfig({
   antd: {
     dark: true,
   },
+  history: {
+    type: 'hash'
+  }
 });
