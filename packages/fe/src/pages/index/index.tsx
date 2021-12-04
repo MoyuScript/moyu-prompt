@@ -1,6 +1,6 @@
 import styles from './index.less';
 import { history, Link, useLocation } from 'umi';
-import { Anchor, Button, Layout } from 'antd';
+import { Anchor, Button, Layout, message } from 'antd';
 import Header from './components/Header';
 import { Project } from '@/common/project';
 import ProjectManager from '@/components/ProjectManager';
@@ -37,13 +37,23 @@ export default function IndexPage() {
           <Button
             className={styles.btn}
             onClick={() => {
+              if (!navigator.onLine) {
+                message.error('请检查你的网络连接！')
+                return;
+              }
               setProjectManagerVisible(true);
               setOnPickGoto('/controller');
             }}
           >
             遥控器
           </Button>
-          <Button className={styles.btn} onClick={() => navTo('/displayer')}>
+          <Button className={styles.btn} onClick={() => {
+            if (!navigator.onLine) {
+              message.error('请检查你的网络连接！')
+              return;
+            }
+            navTo('/displayer')
+          }}>
             显示器
           </Button>
           <Button
