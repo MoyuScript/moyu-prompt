@@ -57,13 +57,11 @@ const ControllerPage: React.FC<ControllerPageProps> = () => {
         history.push('/');
         return;
       }
-      console.log('Set', project)
       setProject(project);
     });
   }, []);
 
   useEffect(() => {
-    console.log(socket, project, connectionStage)
     if (socket && connectionStage === 2) {
       if (project) {
         socket.emit('updateContent', project.content);
