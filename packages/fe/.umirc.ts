@@ -1,4 +1,5 @@
 import { defineConfig } from 'umi';
+import { GenerateSW, InjectManifest } from 'workbox-webpack-plugin';
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -32,6 +33,15 @@ export default defineConfig({
       title: '本地模式 - 摸鱼提词器',
     },
   ],
+  chainWebpack(memo) {
+    memo.plugin('workbox-generate-sw').use(GenerateSW, [
+      {
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+      },
+    ]);
+  },
   fastRefresh: {},
   antd: {
     dark: true,
@@ -39,4 +49,5 @@ export default defineConfig({
   history: {
     type: 'hash',
   },
+  webpack5: {},
 });
